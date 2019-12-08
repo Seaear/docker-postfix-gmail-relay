@@ -23,11 +23,16 @@ postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd && \
 postconf -e smtp_sasl_security_options=noanonymous && \
 postconf -e smtp_use_tls=yes && \
 postconf -e mynetworks="10.0.0.0/8 172.16.0.0/12 192.168.0.0/16" && \
+postconf -e smtpd_tls_wrappermode=yes && \
+postconf -e smtpd_sasl_auth_enable=yes && \
+postconf -e smtpd_client_restrictions=permit_mynetworks,permit_sasl_authenticated,reject && \
+postconf -e smtpd_sasl_type=dovecot && \
+postconf -e smtpd_sasl_path=private/auth && \
 mkdir -p /var/log/supervisor
 
 COPY supervisord.conf /etc/supervisor/
 COPY init.sh /opt/init.sh
 
-EXPOSE 25
+EXPOSE 25 465
 
 CMD ["/opt/init.sh"]
